@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script
+      crossorigin
+      src="https://unpkg.com/react@16/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      const GuGuDan = () => {
+        const [first, setFirst] = React.useState(Math.ceil(Math.random() * 9));
+        const [second, setSecond] = React.useState(
+          Math.ceil(Math.random() * 9)
+        ); //
+        const [value, setValue] = React.useState("");
+        const [result, setResult] = React.useState("");
+        const inputRef = React.useRef(null);
+
+        // React Hook : class를 쓰지 않고, function에서 state 를 운용할 수 있는 기능
+
+        // const [state, setState] = React.useState({
+        //   first: Math.ceil(Math.random() * 9),
+        //   second: Math.ceil(Math.random() * 9),
+        //   value: "",
+        //   result: "",
+        // });
+
+        // class에서 쓰이는 state 방식처럼 쓰게 되면
+        // 부분적으로 할때 문제가 생김
+        // this.setState와는 다르게 일일이 바꿔줘야 한다
+
+        const onSubmitForm = (e) => {
+          e.preventDefault();
+          if (parseInt(value) === first * second) {
+            setResult("정답: " + value);
+            setFirst(Math.ceil(Math.random() * 9));
+            setSecond(Math.ceil(Math.random() * 9));
+            setValue("");
+            inputRef.current.focus();
+          } else {
+            setResult("땡");
+            setValue("");
+            inputRef.current.focus();
+          }
+        };
+
+        const onChangeInput = (e) => {
+          setValue(e.target.value);
+        };
+        // html 속성
+        // class -> className
+        // for -> htmlFor
+
+        return (
+          <React.Fragment>
+            <div>
+              {first} 곱하기 {second}는?
+            </div>
+            <form onSubmit={onSubmitForm}>
+              <input ref={inputRef} onChange={onChangeInput} value={value} />
+              <button>입력!</button>
+            </form>
+            <div id="result">{result}</div>
+          </React.Fragment>
+        );
+      };
+    </script>
+    <script type="text/babel">
+      ReactDOM.render(<GuGuDan />, document.querySelector("#root"));
+    </script>
+  </body>
+</html>
