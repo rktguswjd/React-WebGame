@@ -4,7 +4,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { hot } from "react-hot-loader/root";
 
-import NumberBaseball from "./NumberBaseball";
-const Hot = hot(NumberBaseball);
+import NumberBaseballClass from "./NumberBaseballClass";
+const Hot = hot(NumberBaseballClass);
 
 ReactDOM.render(<Hot />, document.querySelector("#root"));
