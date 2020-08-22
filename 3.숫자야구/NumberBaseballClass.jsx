@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import Try from "./Try";
+import React, { Component, createRef } from "react";
+import TryClass from "./TryClass.jsx";
 // exports되는 게 객체나 배열이면 구조 분해할 수 있다.
 
 function getNumbers() {
@@ -14,7 +14,7 @@ function getNumbers() {
   return array;
 }
 
-class NumberBaseball extends Component {
+class NumberBaseballClass extends Component {
   state = {
     result: "",
     value: "",
@@ -27,11 +27,13 @@ class NumberBaseball extends Component {
     e.preventDefault();
     if (value === answer.join("")) {
       // join : 하나의 문자로 합침, 괄호안에 구분자 !
-      this.setState({
-        result: "홈런",
-        tries: [...tries, { try: value, result: "홈런" }],
-        // push 쓰면 안됨 리액트가 모름!!
-        // 전개 연산자( ... )를 사용해 좌항에서 명시적으로 할당되지 않은 나머지 배열 값들을 사용해야함
+      this.setState((prevState) => {
+        return {
+          result: "홈런",
+          tries: [...prevState.tries, { try: value, result: "홈런" }],
+          // push 쓰면 안됨 리액트가 모름!!
+          // 전개 연산자( ... )를 사용해 좌항에서 명시적으로 할당되지 않은 나머지 배열 값들을 사용해야함
+        };
       });
       alert("게임을 다시 시작합니다.");
       this.setState({
@@ -55,6 +57,7 @@ class NumberBaseball extends Component {
           answer: getNumbers(),
           tries: [],
         });
+        this.inputRef.current.focus();
       } else {
         for (let i = 0; i < 4; i += 1) {
           if (answerArray[i] === answer[i]) {
@@ -63,16 +66,19 @@ class NumberBaseball extends Component {
             ball += 1;
           }
         }
-        this.setState({
-          tries: [
-            ...tries,
-            {
-              try: value,
-              result: `${strike} 스트라이크, ${ball} 볼입니다.`,
-            },
-          ],
-          value: "",
+        this.setState((prevState) => {
+          return {
+            tries: [
+              ...prevState.tries,
+              {
+                try: value,
+                result: `${strike} 스트라이크, ${ball} 볼입니다.`,
+              },
+            ],
+            value: "",
+          };
         });
+        this.inputRef.current.focus();
       }
     }
   };
@@ -84,6 +90,8 @@ class NumberBaseball extends Component {
     });
   };
 
+  inputRef = createRef();
+
   render() {
     const { result, value, tries } = this.state;
     return (
@@ -91,12 +99,17 @@ class NumberBaseball extends Component {
         <h1>{result}</h1>
         {/* jsx의 주석처리 */}
         <form onSubmit={this.onSubmitForm}>
-          <input maxLength={4} vlaue={value} onChange={this.onChangeInput} />
+          <input
+            ref={this.onInputRef}
+            maxLength={4}
+            value={value}
+            onChange={this.onChangeInput}
+          />
         </form>
         <div>시도 : {tries.length}</div>
         <ul>
           {tries.map((v, i) => {
-            return <Try key={`${i + 1}차 시도 :`} tryInfo={v} />;
+            return <TryClass key={`${i + 1}차 시도 :`} tryInfo={v} />;
           })}
         </ul>
       </>
@@ -106,7 +119,7 @@ class NumberBaseball extends Component {
 
 // export const hello = "hello";
 // export const bye = "hello"; // import { hello }
-export default NumberBaseball; // import NumberBaseball;
+export default NumberBaseballClass; // import NumberBaseball;
 
 // const React = require('react');
 // module.hello = 'hello';
